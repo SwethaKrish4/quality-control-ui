@@ -1,38 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   AppBar,
   Toolbar,
   Typography,
   Box,
   IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
   Breadcrumbs,
   Link,
 } from '@mui/material';
 import {
-  CalendarToday,
-  Notifications,
-  HelpOutline,
   KeyboardArrowDown,
 } from '@mui/icons-material';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import ViewSwitcher from './ViewSwitcher';
-import { useView } from '@/utils/viewContext';
+// ViewSwitcher removed per request (technical view dropdown)
+import CalendarIcon from '../../assets/icons/calendar.svg';
+import NotificationIcon from '../../assets/icons/notification.svg';
+import MessageQuestionIcon from '../../assets/icons/message-question.svg';
+import EllipseIcon from '../../assets/icons/Ellipse_12.svg';
 
 const Header = () => {
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { currentView, setCurrentView } = useView();
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // removed technical view dropdown (ViewSwitcher)
 
   // Get breadcrumb path
   const pathnames = location.pathname.split('/').filter((x) => x);
@@ -56,9 +44,12 @@ const Header = () => {
         backgroundColor: '#FAFAFA',
         borderRadius: 2,
         color: '#111827',
+        width: '100%',
+        maxWidth: 1200,
+        height: 48,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', px: 3, py: 1.5 }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 2, py: 0.5, width: '100%', height: '100%', minHeight: '48px' }}>
         {/* Left: Logo and Breadcrumbs */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
           <Typography
@@ -136,14 +127,19 @@ const Header = () => {
         </Box>
 
         {/* Right: View Switcher, Clinic, Icons, User */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <ViewSwitcher currentView={currentView} onViewChange={setCurrentView} />
-
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
           <Typography
             variant="body2"
             sx={{
-              color: '#6b7280',
-              fontSize: '0.875rem',
+              width: 267,
+              height: 22,
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '145%',
+              letterSpacing: '0%',
+              color: '#232323',
+              opacity: 1,
             }}
           >
             Clinic: Crysta IVF, Banglore
@@ -152,28 +148,54 @@ const Header = () => {
           <IconButton
             size="small"
             sx={{
-              color: '#6b7280',
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
               '&:hover': {
                 backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
               },
             }}
           >
-            <CalendarToday fontSize="small" />
+            <img
+              src={CalendarIcon}
+              alt="Calendar"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
+              }}
+            />
           </IconButton>
 
           <IconButton
             size="small"
             sx={{
-              color: '#6b7280',
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
               position: 'relative',
               '&:hover': {
                 backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
               },
             }}
           >
-            <Notifications fontSize="small" />
+            <img
+              src={NotificationIcon}
+              alt="Notifications"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
+              }}
+            />
             <Box
               sx={{
                 position: 'absolute',
@@ -191,14 +213,28 @@ const Header = () => {
           <IconButton
             size="small"
             sx={{
-              color: '#6b7280',
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
               '&:hover': {
                 backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
               },
             }}
           >
-            <HelpOutline fontSize="small" />
+            <img
+              src={MessageQuestionIcon}
+              alt="Help"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
+                display: 'block',
+              }}
+            />
           </IconButton>
 
           <Box
@@ -207,58 +243,86 @@ const Header = () => {
               alignItems: 'center',
               gap: 1,
               cursor: 'pointer',
-              px: 1.5,
-              py: 0.75,
-              borderRadius: 2,
-              '&:hover': { backgroundColor: '#f3f4f6' },
+              width: 158,
+              height: 42,
+              opacity: 1,
             }}
-            onClick={handleMenuOpen}
           >
-            <Avatar
+            <Box
               sx={{
-                width: 36,
-                height: 36,
-                bgcolor: '#14b8a6',
-                fontSize: '0.875rem',
-                fontWeight: 600,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '1px solid #FFFFFF',
+                backgroundColor: '#D9D9D9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 1,
               }}
             >
-              KR
-            </Avatar>
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.2 }}>
-                Kate Russell
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.2 }}>
+              <img
+                src={EllipseIcon}
+                alt="User Avatar"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: 110,
+                height: 42,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0.5,
+                opacity: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 110,
+                  height: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  opacity: 1,
+                }}
+              >
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    fontWeight: 500, 
+                    fontSize: '0.875rem', 
+                    lineHeight: 1.2,
+                    flex: 1,
+                  }}
+                >
+                  Kate Russell
+                </Typography>
+                <KeyboardArrowDown fontSize="small" sx={{ color: '#6b7280' }} />
+              </Box>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  width: 82,
+                  height: 18,
+                  fontFamily: 'Noto Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '14px',
+                  lineHeight: '18px',
+                  letterSpacing: '0px',
+                  color: '#9E9E9E',
+                  opacity: 1,
+                }}
+              >
                 Receptionist
               </Typography>
             </Box>
-            <KeyboardArrowDown fontSize="small" sx={{ color: '#6b7280' }} />
           </Box>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            PaperProps={{
-              sx: {
-                mt: 1,
-                minWidth: 180,
-              },
-            }}
-          >
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Settings</MenuItem>
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Logout</MenuItem>
-          </Menu>
         </Box>
       </Toolbar>
     </AppBar>
