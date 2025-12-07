@@ -66,11 +66,10 @@ const Header = () => {
           </Typography>
 
           <Breadcrumbs
-            separator="›"
+            separator={<Typography sx={{ color: '#232323', fontSize: '0.875rem' }}>›</Typography>}
             aria-label="breadcrumb"
             sx={{
               '& .MuiBreadcrumbs-separator': {
-                color: '#9ca3af',
                 mx: 1,
               },
             }}
@@ -80,8 +79,18 @@ const Header = () => {
               to="/"
               sx={{
                 textDecoration: 'none',
-                color: '#6b7280',
-                fontSize: '0.875rem',
+                color: '#666666',
+                display: 'inline-block',
+                width: 123,
+                height: 20,
+                transform: 'none',
+                opacity: 1,
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontSize: '16px',
+                lineHeight: '100%',
+                letterSpacing: '0',
                 '&:hover': {
                   color: '#14b8a6',
                 },
@@ -92,17 +101,30 @@ const Header = () => {
             {pathnames.map((name, index) => {
               const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
               const isLast = index === pathnames.length - 1;
+              const displayText = breadcrumbMap[name] || name;
+              const isDashboard = displayText === 'Dashboard' || name === 'dashboard';
+
               return isLast ? (
                 <Typography
                   key={name}
                   sx={{
-                    color: '#111827',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    textTransform: 'capitalize'
+                    transform: 'none',
+                    opacity: 1,
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: isDashboard ? 700 : 500,
+                    fontStyle: 'normal',
+                    fontSize: isDashboard ? '18px' : '0.875rem',
+                    lineHeight: isDashboard ? '100%' : '24px',
+                    letterSpacing: '0',
+                    width: isDashboard ? 104 : 'auto',
+                    height: isDashboard ? 22 : 'auto',
+                    color: isDashboard ? '#232323' : '#111827',
+                    textTransform: 'capitalize',
+                    display: 'inline-block',
+                    px: isDashboard ? 1 : 0,
                   }}
                 >
-                  {breadcrumbMap[name] || name}
+                  {displayText}
                 </Typography>
               ) : (
                 <Link
@@ -119,7 +141,7 @@ const Header = () => {
                     },
                   }}
                 >
-                  {breadcrumbMap[name] || name}
+                  {displayText}
                 </Link>
               );
             })}
@@ -127,11 +149,10 @@ const Header = () => {
         </Box>
 
         {/* Right: View Switcher, Clinic, Icons, User */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml:'auto', mr:-12 }}>
           <Typography
             variant="body2"
             sx={{
-              width: 267,
               height: 22,
               fontFamily: 'Nunito, sans-serif',
               fontWeight: 500,
@@ -140,6 +161,7 @@ const Header = () => {
               letterSpacing: '0%',
               color: '#232323',
               opacity: 1,
+              ml:0,
             }}
           >
             Clinic: Crysta IVF, Banglore
@@ -194,18 +216,6 @@ const Header = () => {
                 width: 24,
                 height: 24,
                 objectFit: 'contain',
-              }}
-            />
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 6,
-                right: 6,
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: '#ef4444',
-                border: '2px solid #ffffff',
               }}
             />
           </IconButton>
@@ -299,6 +309,7 @@ const Header = () => {
                     fontSize: '0.875rem', 
                     lineHeight: 1.2,
                     flex: 1,
+                    color: '#232323',
                   }}
                 >
                   Kate Russell

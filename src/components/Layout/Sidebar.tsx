@@ -8,6 +8,7 @@ import SecuritySafe from "../../assets/icons/security-safe.svg";
 import ClinicLogo from "../../assets/icons/Clinic-Logo.svg";
 import VidaiLogo from "../../assets/icons/Vidai-logo.svg";
 import UpdatedVersionIcon from "../../assets/icons/Updated_Version.svg";
+import DashboardCardBg from "../../assets/icons/dashboard_card_bg.svg";
 
 import {
   Drawer,
@@ -79,11 +80,13 @@ const Sidebar = () => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          backgroundColor: '#FFFFFF',
+         backgroundColor: '#FAFAFA',
           display: 'flex',
           flexDirection: 'column',
           borderRadius: 2,
-          boxShadow: '2px 0 8px rgba(0, 0, 0, 0.04)',
+          boxShadow: 'none',
+          borderRight: 'none',
+          outline: 'none',
         },
       }}
     >
@@ -107,10 +110,14 @@ const Sidebar = () => {
       <Card
           sx={{
     p: 1,
-    mx: 1,
+    //mx: 1,
+    ml:1,
+    mr:1,
     mt: 1,
     mb: 1,
     borderRadius: 2,
+    // match header background
+    backgroundColor: '#FFFFFF',
     // requested box-shadow
     boxShadow: '0px 0px 14px 0px #0000000F',
     position: 'relative',
@@ -234,28 +241,32 @@ const Sidebar = () => {
       </Card>
 
       {/* Quality Control Heading */}
+      <Box sx={{ pr: 5}}>
       <div>
         <Box sx={{
-          width: 282,
-          height: 898,
+          maxWidth: 282,
+          width: "105%",
+          height: 520,
           backgroundColor: '#FFFFFF',
-          mx: 1,
+          position: 'relative',
           mt: 1,
+          mr:2,
+          ml:2,
+          mb:2, 
           borderRadius: '20px',
           // Use transparent border with gradient source for border-image
-          border: '1px solid transparent',
-          borderImageSource: 'linear-gradient(174.5deg, rgba(228, 228, 228, 0) -0.5%, #EEEEEE 100%)',
-          borderImageSlice: 1,
+          border: 'none',
           boxShadow: '0px 0px 14px 0px #0000000F',
           p: 3,
+          pt: 1.5,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
           transform: 'rotate(0deg)',
           opacity: 1,
         }}>
-            <Box sx={{ px: 2.5, pt: 1.5, pb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ px: 0, pt: 0, pb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-start', pl: 0, ml: -1.5 }}>
     
     {/* Logo Circle (bigger & centered like your screenshot) */}
 <Box
@@ -264,8 +275,9 @@ const Sidebar = () => {
     height: 32,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    
+    justifyContent: "felxstart",
+    ml:'0',
+    flexShrink: 0
   }}
 >
   <img
@@ -290,7 +302,7 @@ const Sidebar = () => {
         fontFamily: 'Montserrat, sans-serif',
         fontWeight: 700,
         fontStyle: 'normal',
-        fontSize: '20px',
+        fontSize: '17px',
         lineHeight: '24px',
         letterSpacing: '0',
         color: '#E17E61',
@@ -298,7 +310,7 @@ const Sidebar = () => {
         alignItems: 'center',
         justifyContent: 'flex-start',
         flex: 1,
-        ml: 1,
+        ml: 0,
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
@@ -311,21 +323,27 @@ const Sidebar = () => {
 </Box>
 
           {/* Navigation Menu - Simple text, active in black */}
-          <List sx={{ pt: 0, flex: 1, px: 2 }}>
+          <List sx={{ pt: 0, flex: 1, px: 5 }}>
             {menuItems.map((item) => {
               const isActive =
                 location.pathname === item.path ||
                 (location.pathname.startsWith(item.path.split('?')[0]) && item.path.includes('?'));
 
               return (
-                <ListItem key={item.text} disablePadding sx={{ mb: 0.125 }}>
+                <ListItem key={item.text} disablePadding sx={{ mb: '10px' }}>
                   <ListItemButton
                     onClick={() => navigate(item.path)}
                     sx={{
+                      width: 194,
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
                       px: 2,
-                      py: 1.25,
+                      py: '8px',
                       borderRadius: 1,
                       backgroundColor: 'transparent',
+                      boxSizing: 'border-box',
                       '&:hover': {
                         backgroundColor: '#f9fafb',
                       },
@@ -334,7 +352,7 @@ const Sidebar = () => {
                     <ListItemText
                       primary={item.text}
                       primaryTypographyProps={{
-                        fontSize: '0.8125rem',
+                        fontSize: '16px',
                         fontWeight: isActive ? 700 : 400,
                         color: isActive ? '#111827' : '#9ca3af',
                         letterSpacing: '-0.01em',
@@ -346,8 +364,27 @@ const Sidebar = () => {
             })}
           </List>
 
+          {/* Decorative background SVG placed above the VIDAI logo */}
+          <Box
+            component="img"
+            src={DashboardCardBg}
+            alt="dashboard background"
+            sx={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 70,
+              width: '80%',
+              height: 'auto',
+              pointerEvents: 'none',
+              opacity: 4,
+              zIndex: 0,
+              color:'#E17E61'
+            }}
+          />
+
           {/* Bottom Section with VIDAI Logo */}
-          <Box sx={{ p: 2, mt: 'auto' }}>
+          <Box sx={{ p: 2, mt: 'auto', position: 'relative', zIndex: 1 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -373,14 +410,17 @@ const Sidebar = () => {
               </Box>
               <Box
                 sx={{
-                  width: 124,
+                  width: '100%',
+                  maxWidth: 190,
                   height: 15,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'flex-end',
+                  pl: 2,
                   transform: 'rotate(0deg)',
                   opacity: 1,
                   borderRadius: 1,
+                  ml: '28px',
                 }}
               >
                 <img
@@ -400,6 +440,7 @@ const Sidebar = () => {
           </Box>
         </Box>
       </div>
+      </Box>
     </Drawer>
   );
 };
