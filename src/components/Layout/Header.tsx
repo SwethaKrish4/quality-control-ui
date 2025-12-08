@@ -1,38 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   AppBar,
   Toolbar,
   Typography,
   Box,
   IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
   Breadcrumbs,
   Link,
 } from '@mui/material';
 import {
-  CalendarToday,
-  Notifications,
-  HelpOutline,
   KeyboardArrowDown,
 } from '@mui/icons-material';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import ViewSwitcher from './ViewSwitcher';
-import { useView } from '@/utils/viewContext';
+// ViewSwitcher removed per request (technical view dropdown)
+import CalendarIcon from '../../assets/icons/calendar.svg';
+import NotificationIcon from '../../assets/icons/notification.svg';
+import MessageQuestionIcon from '../../assets/icons/message-question.svg';
+import EllipseIcon from '../../assets/icons/Ellipse_12.svg';
 
 const Header = () => {
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { currentView, setCurrentView } = useView();
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // removed technical view dropdown (ViewSwitcher)
 
   // Get breadcrumb path
   const pathnames = location.pathname.split('/').filter((x) => x);
@@ -56,9 +44,12 @@ const Header = () => {
         backgroundColor: '#FAFAFA',
         borderRadius: 2,
         color: '#111827',
+        width: '100%',
+        maxWidth: 1200,
+        height: 48,
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', px: 3, py: 1.5 }}>
+      <Toolbar sx={{ justifyContent: 'space-between', px: 2, py: 0.5, width: '100%', height: '100%', minHeight: '48px' }}>
         {/* Left: Logo and Breadcrumbs */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
           <Typography
@@ -75,11 +66,10 @@ const Header = () => {
           </Typography>
 
           <Breadcrumbs
-            separator="›"
+            separator={<Typography sx={{ color: '#232323', fontSize: '0.875rem' }}>›</Typography>}
             aria-label="breadcrumb"
             sx={{
               '& .MuiBreadcrumbs-separator': {
-                color: '#9ca3af',
                 mx: 1,
               },
             }}
@@ -89,8 +79,18 @@ const Header = () => {
               to="/"
               sx={{
                 textDecoration: 'none',
-                color: '#6b7280',
-                fontSize: '0.875rem',
+                color: '#666666',
+                display: 'inline-block',
+                width: 123,
+                height: 20,
+                transform: 'none',
+                opacity: 1,
+                fontFamily: 'Montserrat, sans-serif',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontSize: '16px',
+                lineHeight: '100%',
+                letterSpacing: '0',
                 '&:hover': {
                   color: '#14b8a6',
                 },
@@ -101,17 +101,30 @@ const Header = () => {
             {pathnames.map((name, index) => {
               const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`;
               const isLast = index === pathnames.length - 1;
+              const displayText = breadcrumbMap[name] || name;
+              const isDashboard = displayText === 'Dashboard' || name === 'dashboard';
+
               return isLast ? (
                 <Typography
                   key={name}
                   sx={{
-                    color: '#111827',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    textTransform: 'capitalize'
+                    transform: 'none',
+                    opacity: 1,
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: isDashboard ? 700 : 500,
+                    fontStyle: 'normal',
+                    fontSize: isDashboard ? '18px' : '0.875rem',
+                    lineHeight: isDashboard ? '100%' : '24px',
+                    letterSpacing: '0',
+                    width: isDashboard ? 104 : 'auto',
+                    height: isDashboard ? 22 : 'auto',
+                    color: isDashboard ? '#232323' : '#111827',
+                    textTransform: 'capitalize',
+                    display: 'inline-block',
+                    px: isDashboard ? 1 : 0,
                   }}
                 >
-                  {breadcrumbMap[name] || name}
+                  {displayText}
                 </Typography>
               ) : (
                 <Link
@@ -128,7 +141,7 @@ const Header = () => {
                     },
                   }}
                 >
-                  {breadcrumbMap[name] || name}
+                  {displayText}
                 </Link>
               );
             })}
@@ -136,14 +149,19 @@ const Header = () => {
         </Box>
 
         {/* Right: View Switcher, Clinic, Icons, User */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <ViewSwitcher currentView={currentView} onViewChange={setCurrentView} />
-
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml:'auto', mr:-12 }}>
           <Typography
             variant="body2"
             sx={{
-              color: '#6b7280',
-              fontSize: '0.875rem',
+              height: 22,
+              fontFamily: 'Nunito, sans-serif',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '145%',
+              letterSpacing: '0%',
+              color: '#232323',
+              opacity: 1,
+              ml:0,
             }}
           >
             Clinic: Crysta IVF, Banglore
@@ -152,38 +170,25 @@ const Header = () => {
           <IconButton
             size="small"
             sx={{
-              color: '#6b7280',
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
               '&:hover': {
                 backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
               },
             }}
           >
-            <CalendarToday fontSize="small" />
-          </IconButton>
-
-          <IconButton
-            size="small"
-            sx={{
-              color: '#6b7280',
-              position: 'relative',
-              '&:hover': {
-                backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
-              },
-            }}
-          >
-            <Notifications fontSize="small" />
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 6,
-                right: 6,
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: '#ef4444',
-                border: '2px solid #ffffff',
+            <img
+              src={CalendarIcon}
+              alt="Calendar"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
               }}
             />
           </IconButton>
@@ -191,14 +196,55 @@ const Header = () => {
           <IconButton
             size="small"
             sx={{
-              color: '#6b7280',
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
+              position: 'relative',
               '&:hover': {
                 backgroundColor: '#f3f4f6',
-                color: '#14b8a6',
               },
             }}
           >
-            <HelpOutline fontSize="small" />
+            <img
+              src={NotificationIcon}
+              alt="Notifications"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
+              }}
+            />
+          </IconButton>
+
+          <IconButton
+            size="small"
+            sx={{
+              width: 48,
+              height: 48,
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #e5e7eb',
+              opacity: 1,
+              '&:hover': {
+                backgroundColor: '#f3f4f6',
+              },
+            }}
+          >
+            <img
+              src={MessageQuestionIcon}
+              alt="Help"
+              style={{
+                width: 24,
+                height: 24,
+                objectFit: 'contain',
+                display: 'block',
+              }}
+            />
           </IconButton>
 
           <Box
@@ -207,58 +253,87 @@ const Header = () => {
               alignItems: 'center',
               gap: 1,
               cursor: 'pointer',
-              px: 1.5,
-              py: 0.75,
-              borderRadius: 2,
-              '&:hover': { backgroundColor: '#f3f4f6' },
+              width: 158,
+              height: 42,
+              opacity: 1,
             }}
-            onClick={handleMenuOpen}
           >
-            <Avatar
+            <Box
               sx={{
-                width: 36,
-                height: 36,
-                bgcolor: '#14b8a6',
-                fontSize: '0.875rem',
-                fontWeight: 600,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '1px solid #FFFFFF',
+                backgroundColor: '#D9D9D9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 1,
               }}
             >
-              KR
-            </Avatar>
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.2 }}>
-                Kate Russell
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#6b7280', fontSize: '0.75rem', lineHeight: 1.2 }}>
+              <img
+                src={EllipseIcon}
+                alt="User Avatar"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: 110,
+                height: 42,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 0.5,
+                opacity: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  width: 110,
+                  height: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  opacity: 1,
+                }}
+              >
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    fontWeight: 500, 
+                    fontSize: '0.875rem', 
+                    lineHeight: 1.2,
+                    flex: 1,
+                    color: '#232323',
+                  }}
+                >
+                  Kate Russell
+                </Typography>
+                <KeyboardArrowDown fontSize="small" sx={{ color: '#6b7280' }} />
+              </Box>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  width: 82,
+                  height: 18,
+                  fontFamily: 'Noto Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '14px',
+                  lineHeight: '18px',
+                  letterSpacing: '0px',
+                  color: '#9E9E9E',
+                  opacity: 1,
+                }}
+              >
                 Receptionist
               </Typography>
             </Box>
-            <KeyboardArrowDown fontSize="small" sx={{ color: '#6b7280' }} />
           </Box>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            PaperProps={{
-              sx: {
-                mt: 1,
-                minWidth: 180,
-              },
-            }}
-          >
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Settings</MenuItem>
-            <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>Logout</MenuItem>
-          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

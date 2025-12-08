@@ -1,5 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import ShieldTickIcon from "../../assets/icons/shield-tick.svg";
+import BriefcaseIcon from "../../assets/icons/brifecase-tick.svg";
+import ReceiptSearch from "../../assets/icons/receipt-search.svg";
+import TickmarkCircle from "../../assets/icons/Tick-mark-circle.svg";
+import SecuritySafe from "../../assets/icons/security-safe.svg";
+import ClinicLogo from "../../assets/icons/Clinic-Logo.svg";
+import VidaiLogo from "../../assets/icons/Vidai-logo.svg";
+import UpdatedVersionIcon from "../../assets/icons/Updated_Version.svg";
+import DashboardCardBg from "../../assets/icons/dashboard_card_bg.svg";
+
 import {
   Drawer,
   List,
@@ -7,16 +17,12 @@ import {
   ListItemButton,
   ListItemText,
   Box,
+  Card,
   Typography,
   Divider,
   IconButton,
 } from '@mui/material';
-import {
-  Shield,
-  Work,
-  Description,
-  CheckCircle,
-} from '@mui/icons-material';
+
 import { useView } from '@/utils/viewContext';
 
 const drawerWidth = 240;
@@ -24,7 +30,6 @@ const drawerWidth = 240;
 const getMenuItems = (view: 'technician' | 'admin' | 'user') => {
   switch (view) {
     case 'admin':
-      // Admin: Full access - all tabs
       return [
         { text: 'Dashboard', path: '/admin-dashboard' },
         { text: 'Clinical', path: '/clinical' },
@@ -33,14 +38,12 @@ const getMenuItems = (view: 'technician' | 'admin' | 'user') => {
         { text: 'Configuration', path: '/configuration' },
       ];
     case 'user':
-      // User: Limited access - Dashboard and Configuration (view only)
       return [
         { text: 'Dashboard', path: '/dashboard' },
         { text: 'Configuration', path: '/user-configuration' },
       ];
     case 'technician':
     default:
-      // Technician: Full access - all tabs
       return [
         { text: 'Dashboard', path: '/dashboard' },
         { text: 'Clinical', path: '/clinical' },
@@ -56,7 +59,17 @@ const Sidebar = () => {
   const location = useLocation();
   const { currentView } = useView();
 
+  // ✏️ ADDED: State to track which icon is selected (0, 1, 2, or 3)
+  const [selectedIcon, setSelectedIcon] = useState(0);
+
   const menuItems = getMenuItems(currentView);
+
+  // ✏️ ADDED: Function to handle icon clicks
+  const handleIconClick = (iconIndex: number) => {
+    setSelectedIcon(iconIndex);
+    // You can add navigation logic here if each icon should navigate somewhere
+    // For example: navigate('/some-path');
+  };
 
   return (
     <Drawer
@@ -67,220 +80,366 @@ const Sidebar = () => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          backgroundColor: '#FFFFFF',
+         backgroundColor: '#FAFAFA',
           display: 'flex',
           flexDirection: 'column',
           borderRadius: 2,
-          boxShadow: '2px 0 8px rgba(0, 0, 0, 0.04)',
+          boxShadow: 'none',
+          borderRight: 'none',
+          outline: 'none',
         },
       }}
     >
-      {/* Logo at Top */}
-      <Box sx={{ p: 2, pb: 1.5 }}>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            fontSize: '1.9375rem',
-            fontWeight: 600,
-            color: 'black',
-            display: 'flex',
-            alignItems: 'baseline',
-            letterSpacing: '-0.02em',
+      {/* Logo at Top (replaced with Clinic Logo) */}
+      <Box sx={{ p: 2, pb: 1.5, display: 'flex', alignItems: 'center' }}>
+        <img
+          src={ClinicLogo}
+          alt="Clinic Logo"
+          style={{
+            width: 134,
+            height: 46,
+            transform: 'rotate(0deg)',
+            opacity: 1,
+            objectFit: 'contain',
+            display: 'block',
           }}
-        >
-          Fertility 
-          <br></br>
-          care
-        </Typography>
+        />
       </Box>
 
-      {/* Icon Row - Square Icons */}
-      <Box sx={{ px: 2, pb: 1.5, display: 'flex', gap: 0.75 }}>
-        {/* First icon - Shield with checkmark (highlighted in orange) */}
-        <Box sx={{ position: 'relative' }}>
-          <IconButton
-            size="small"
-            sx={{
-              width: 32,
-              height: 32,
-              backgroundColor: '#ea580c',
-              color: '#ffffff',
-              borderRadius: 1,
-              '&:hover': { backgroundColor: '#c2410c' },
-            }}
-          >
-            <Shield sx={{ fontSize: 16 }} />
-          </IconButton>
-          {/* Selection indicator below */}
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: -3,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 18,
-              height: 2,
-              backgroundColor: '#ea580c',
-              borderRadius: 1,
-            }}
-          />
-        </Box>
-
-        {/* Other square icons */}
-        <IconButton
-          size="small"
+      {/* ✏️ MODIFIED: Icon Row - Now with clickable selection behavior */}
+      <Card
           sx={{
-            width: 32,
-            height: 32,
-            backgroundColor: '#f3f4f6',
-            color: '#6b7280',
-            borderRadius: 1,
-            '&:hover': { backgroundColor: '#e5e7eb' },
-          }}
-        >
-          <Work sx={{ fontSize: 16 }} />
-        </IconButton>
-
-        <IconButton
-          size="small"
-          sx={{
-            width: 32,
-            height: 32,
-            backgroundColor: '#f3f4f6',
-            color: '#6b7280',
-            borderRadius: 1,
-            '&:hover': { backgroundColor: '#e5e7eb' },
-          }}
-        >
-          <Shield sx={{ fontSize: 16 }} />
-        </IconButton>
-
-        <IconButton
-          size="small"
-          sx={{
-            width: 32,
-            height: 32,
-            backgroundColor: '#f3f4f6',
-            color: '#6b7280',
-            borderRadius: 1,
-            '&:hover': { backgroundColor: '#e5e7eb' },
-          }}
-        >
-          <Description sx={{ fontSize: 16 }} />
-        </IconButton>
-      </Box>
-
-      <Divider />
-
-      {/* Quality Control Heading */}
-      <Box sx={{ px: 2.5, pt: 1.5, pb: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Box
-            sx={{
-              width: 16,
-              height: 16,
-              borderRadius: '50%',
-              backgroundColor: '#ea580c',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <CheckCircle sx={{ color: '#ffffff', fontSize: 10 }} />
-          </Box>
-          <Typography
-            variant="h6"
-            sx={{
-              color: '#ea580c',
-              fontWeight: 600,
-              fontSize: '0.8125rem',
-            }}
-          >
-            Quality Control
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Navigation Menu - Simple text, active in black */}
-      <List sx={{ pt: 0, flex: 1, px: 2 }}>
-        {menuItems.map((item) => {
-          const isActive =
-            location.pathname === item.path ||
-            (location.pathname.startsWith(item.path.split('?')[0]) && item.path.includes('?'));
-
-          return (
-            <ListItem key={item.text} disablePadding sx={{ mb: 0.125 }}>
-              <ListItemButton
-                onClick={() => navigate(item.path)}
-                sx={{
-                  px: 2,
-                  py: 0.75,
-                  borderRadius: 1,
-                  backgroundColor: 'transparent',
-                  '&:hover': {
-                    backgroundColor: '#f9fafb',
-                  },
-                }}
-              >
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontSize: '0.8125rem',
-                    fontWeight: isActive ? 700 : 400,
-                    color: isActive ? '#111827' : '#9ca3af',
-                    letterSpacing: '-0.01em',
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
-
-      {/* Bottom Section with VIDAI Logo */}
-      <Box sx={{ p: 2, borderTop: '1px solid #e5e7eb', mt: 'auto' }}>
+    p: 1,
+    //mx: 1,
+    ml:1,
+    mr:1,
+    mt: 1,
+    mb: 1,
+    borderRadius: 2,
+    // match header background
+    backgroundColor: '#FFFFFF',
+    // requested box-shadow
+    boxShadow: '0px 0px 14px 0px #0000000F',
+    position: 'relative',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    height: 56,
+    minHeight: 50,
+    flexShrink: 0,
+    overflow: "hidden",
+    opacity: 1,
+  }}
+      >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 0.375,
+            position: 'relative',
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+            pl: 1.5,
+            pr: 1,
+            gap: 1.5,
           }}
         >
-          {/* Circular graphic placeholder */}
-          <Box
+          {/* ✏️ MODIFIED: Icon 1 - Shield with checkmark */}
+          <IconButton
+            size="small"
+            onClick={() => handleIconClick(0)}
             sx={{
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #ea580c 0%, #14b8a6 100%)',
-              mb: 0.25,
+              p: 0.5,
+              position: 'relative',
+              width: 40,
+              height: 40,
+              backgroundColor: 'transparent',
+              color: selectedIcon === 0 ? '#E17E61' : '#6b7280',
+              borderRadius: 0,
+              border: 'none',
+              boxShadow: 'none',
+              transition: 'none',
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
+          >
+            <img
+              src={TickmarkCircle}
+              alt="tick mark"
+              style={{
+                width: 36,
+                height: 36,
+                objectFit: 'contain',
+                display: 'block',
+                opacity: 1,
+                transform: 'none',
+              }}
+            />
+          </IconButton>
+
+          {/* ✏️ MODIFIED: Icon 2 - Work/Briefcase */}
+          <IconButton
+            size="small"
+            onClick={() => handleIconClick(1)}
+            sx={{
+              p: 0.5,
+              position: 'relative',
+              width: 40,
+              height: 40,
+              backgroundColor: 'transparent',
+              color: selectedIcon === 1 ? '#E17E61' : '#6b7280',
+              borderRadius: 0,
+              border: 'none',
+              boxShadow: 'none',
+              transition: 'none',
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
+          >
+            <img src={BriefcaseIcon} alt="briefcase" style={{ width: 20, height: 20, objectFit: 'contain', opacity: 1 }} />
+          </IconButton>
+
+          {/* ✏️ MODIFIED: Icon 3 - Security Safe */}
+          <IconButton
+            size="small"
+            onClick={() => handleIconClick(2)}
+            sx={{
+              p: 0.5,
+              position: 'relative',
+              width: 40,
+              height: 40,
+              backgroundColor: 'transparent',
+              color: selectedIcon === 2 ? '#E17E61' : '#6b7280',
+              borderRadius: 0,
+              border: 'none',
+              boxShadow: 'none',
+              transition: 'none',
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
+          >
+            <img src={SecuritySafe} alt="security safe" style={{ width: 20, height: 20, objectFit: 'contain', opacity: 1 }} />
+          </IconButton>
+
+          {/* ✏️ MODIFIED: Icon 4 - Description/Document */}
+          <IconButton
+            size="small"
+            onClick={() => handleIconClick(3)}
+            sx={{
+              p: 0.5,
+              position: 'relative',
+              width: 40,
+              height: 40,
+              backgroundColor: 'transparent',
+              color: selectedIcon === 3 ? '#E17E61' : '#6b7280',
+              borderRadius: 0,
+              border: 'none',
+              boxShadow: 'none',
+              transition: 'none',
+              '&:hover': { backgroundColor: 'transparent' },
+            }}
+          >
+            <img src={ReceiptSearch} alt="receipt search" style={{ width: 20, height: 20, objectFit: 'contain', opacity: 1 }} />
+          </IconButton>
+        </Box>
+      </Card>
+
+      {/* Quality Control Heading */}
+      <Box sx={{ pr: 5}}>
+      <div>
+        <Box sx={{
+          maxWidth: 282,
+          width: "105%",
+          height: 520,
+          backgroundColor: '#FFFFFF',
+          position: 'relative',
+          mt: 1,
+          mr:2,
+          ml:2,
+          mb:2, 
+          borderRadius: '20px',
+          // Use transparent border with gradient source for border-image
+          border: 'none',
+          boxShadow: '0px 0px 14px 0px #0000000F',
+          p: 3,
+          pt: 1.5,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          transform: 'rotate(0deg)',
+          opacity: 1,
+        }}>
+            <Box sx={{ px: 0, pt: 0, pb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'flex-start', pl: 0, ml: -1.5 }}>
+    
+    {/* Logo Circle (bigger & centered like your screenshot) */}
+<Box
+  sx={{
+    width: 32,
+    height: 32,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "felxstart",
+    ml:'0',
+    flexShrink: 0
+  }}
+>
+  <img
+    src={ShieldTickIcon}
+    alt="Shield Tick Icon"
+    style={{
+      width: "28px",
+      height: "28px",
+      objectFit: "contain",
+      
+
+    }}
+  />
+</Box>
+
+
+    {/* Title in single horizontal line */}
+    <Typography
+      sx={{
+        transform: 'none',
+        opacity: 1,
+        fontFamily: 'Montserrat, sans-serif',
+        fontWeight: 700,
+        fontStyle: 'normal',
+        fontSize: '17px',
+        lineHeight: '24px',
+        letterSpacing: '0',
+        color: '#E17E61',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flex: 1,
+        ml: 0,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
+    >
+      Quality Control
+    </Typography>
+
+  </Box>
+</Box>
+
+          {/* Navigation Menu - Simple text, active in black */}
+          <List sx={{ pt: 0, flex: 1, px: 5 }}>
+            {menuItems.map((item) => {
+              const isActive =
+                location.pathname === item.path ||
+                (location.pathname.startsWith(item.path.split('?')[0]) && item.path.includes('?'));
+
+              return (
+                <ListItem key={item.text} disablePadding sx={{ mb: '10px' }}>
+                  <ListItemButton
+                    onClick={() => navigate(item.path)}
+                    sx={{
+                      width: 194,
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-start',
+                      px: 2,
+                      py: '8px',
+                      borderRadius: 1,
+                      backgroundColor: 'transparent',
+                      boxSizing: 'border-box',
+                      '&:hover': {
+                        backgroundColor: '#f9fafb',
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary={item.text}
+                      primaryTypographyProps={{
+                        fontSize: '16px',
+                        fontWeight: isActive ? 700 : 400,
+                        color: isActive ? '#111827' : '#9ca3af',
+                        letterSpacing: '-0.01em',
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
+          </List>
+
+          {/* Decorative background SVG placed above the VIDAI logo */}
+          <Box
+            component="img"
+            src={DashboardCardBg}
+            alt="dashboard background"
+            sx={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 70,
+              width: '80%',
+              height: 'auto',
+              pointerEvents: 'none',
+              opacity: 4,
+              zIndex: 0,
+              color:'#E17E61'
             }}
           />
-          <Typography
-            variant="caption"
-            sx={{
-              background: 'linear-gradient(90deg, #ea580c 0%, #14b8a6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              fontWeight: 600,
-              fontSize: '0.6875rem',
-            }}
-          >
-            VIDAI AI-Powered EMR
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{
-              color: '#9ca3af',
-              fontSize: '0.625rem',
-            }}
-          >
-            Updated Version: 2.0
-          </Typography>
+
+          {/* Bottom Section with VIDAI Logo */}
+          <Box sx={{ p: 2, mt: 'auto', position: 'relative', zIndex: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0.375,
+              }}
+            >
+             
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <img
+                  src={VidaiLogo}
+                  alt="VIDAI Logo"
+                  style={{
+                    width: 163.00006103515625,
+                    height: 51.643035888671875,
+                    transform: 'rotate(0deg)',
+                    opacity: 1,
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: 190,
+                  height: 15,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  pl: 2,
+                  transform: 'rotate(0deg)',
+                  opacity: 1,
+                  borderRadius: 1,
+                  ml: '28px',
+                }}
+              >
+                <img
+                  src={UpdatedVersionIcon}
+                  alt="Updated Version 2.0"
+                  style={{
+                    width: 124,
+                    height: 15,
+                    transform: 'rotate(0deg)',
+                    opacity: 1,
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+            </Box>
+          </Box>
         </Box>
+      </div>
       </Box>
     </Drawer>
   );
