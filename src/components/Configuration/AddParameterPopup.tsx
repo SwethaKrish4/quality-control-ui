@@ -14,6 +14,14 @@ const AddParameterPopup: React.FC<Props> = ({ open, onClose, onAdd, editData }: 
   const [dataType, setDataType] = useState("");
   const [minValue, setMinValue] = useState("");
   const [maxValue, setMaxValue] = useState("");
+  
+
+  const [dropdownValue, setDropdownValue] = useState("");
+  const [textValue, setTextValue] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [percentage, setPercentage] = useState("");
+  const [integerValue, setIntegerValue] = useState("");
+  const [integerError, setIntegerError] = useState(false);
 
   const [dropdownValue, setDropdownValue] = useState("");
   const [textValue, setTextValue] = useState("");
@@ -23,6 +31,15 @@ const [integerValue, setIntegerValue] = useState("");
 
   useEffect(() => {
     if (open) {
+      setName("");
+      setDataType("");
+      setMinValue("");
+      setMaxValue("");
+      setDropdownValue("");
+      setTextValue("");
+      setSelectedOptions([]);
+      setPercentage("");
+      setIntegerValue("");
       if (editData) {
         // Pre-populate with edit data
         setName(editData.name || "");
@@ -52,6 +69,7 @@ const [integerValue, setIntegerValue] = useState("");
   const handleAdd = () => {
     onAdd({ name, dataType, minValue, maxValue, dropdownValue, textValue, selectedOptions, percentage, integerValue });
     onClose();
+    
   };
 
   return (
@@ -77,6 +95,7 @@ const [integerValue, setIntegerValue] = useState("");
           pb: 1,
         }}
       >
+        Add Parameter
         {editData ? "Edit Parameter" : "Add Parameter"}
         <IconButton onClick={onClose} sx={{ width: "28px", height: "28px" }}>
           <CloseIcon sx={{ fontSize: "18px", color: "#7A7A7A" }} />
@@ -90,6 +109,11 @@ const [integerValue, setIntegerValue] = useState("");
           fullWidth
           size="small"
           value={name}
+          onChange={(e) => setName(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          sx={{
+             width: "380px", 
+      "& .MuiInputLabel-root.Mui-focused": {
           onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setName(e.target.value)}
           InputLabelProps={{ shrink: true }}
           sx={{
@@ -102,6 +126,7 @@ const [integerValue, setIntegerValue] = useState("");
         color: "#5F646F !important",
       },
       
+      "& .MuiOutlinedInput-root": { 
       "& .MuiOutlinedInput-root": {
         
         height: "50px", 
@@ -112,6 +137,10 @@ const [integerValue, setIntegerValue] = useState("");
           borderColor: "#CFD1D4", 
         },
         "&:hover fieldset": {
+          borderColor: "#CFD1D4",
+        },
+        "&.Mui-focused fieldset": {
+          borderColor: "#CFD1D4 !important",
           borderColor: "#CFD1D4", 
         },
         "&.Mui-focused fieldset": {
@@ -128,6 +157,10 @@ const [integerValue, setIntegerValue] = useState("");
           fullWidth
           size="small"
           value={dataType}
+          onChange={(e) => setDataType(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          sx={{
+             width: "380px", 
           onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDataType(e.target.value)}
           InputLabelProps={{ shrink: true }}
           sx={{
@@ -171,12 +204,39 @@ const [integerValue, setIntegerValue] = useState("");
         {/* CONDITIONAL FIELDS */}
         {/* Decimal → show Min & Max */}
         {dataType === "Decimal" && (
+          <Box sx={{ display: "flex", gap: "16px" }}>
           <Box sx={{ display: "flex", gap: "16px", justifyContent: "space-between" }}>
   {/* Min °C TextField */}
   <TextField
     label="Min °C"
     size="small"
     value={minValue}
+    onChange={(e) => setMinValue(e.target.value)}
+    InputLabelProps={{ shrink: true }}
+    sx={{
+    
+      width: "182px",
+      
+      "& .MuiInputLabel-root": { color: "#5F646F !important" },
+      "& .MuiInputLabel-root.Mui-focused": { color: "#5F646F !important" },
+      
+      "& .MuiOutlinedInput-root": {
+       
+        height: "50px", 
+        borderRadius: "10px",
+        
+        "& fieldset": { 
+          borderColor: "#CFD1D4",
+          borderWidth: "1px",
+        },
+        "&:hover fieldset": { borderColor: "#CFD1D4" },
+        "&.Mui-focused fieldset": { borderColor: "#CFD1D4" },
+      },
+      
+      "& .MuiInputBase-input": { 
+        color: "#5F646F", 
+        padding: "10px 10px",
+      },
     onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setMinValue(e.target.value)}
     InputLabelProps={{ shrink: true }}
     sx={{
@@ -197,6 +257,9 @@ const [integerValue, setIntegerValue] = useState("");
   {/* Max °C TextField */}
   <TextField
     label="Max °C"
+    size="small"
+    value={maxValue}
+    onChange={(e) => setMaxValue(e.target.value)}
     
     size="small"
     value={maxValue}
@@ -209,6 +272,12 @@ const [integerValue, setIntegerValue] = useState("");
       "& .MuiInputLabel-root.Mui-focused": { color: "#5F646F !important" },
       
       "& .MuiOutlinedInput-root": {
+        height: "50px", 
+        borderRadius: "10px", 
+        
+        "& fieldset": { 
+          borderColor: "#CFD1D4", 
+          borderWidth: "1px", 
        
         height: "50px", 
         borderRadius: "10px",
@@ -235,12 +304,18 @@ const [integerValue, setIntegerValue] = useState("");
    {dataType === "Select" && (
   <Box sx={{ display: "flex", flexDirection: "row", gap: 3, ml: 1 }}>
     {["Option 1", "Option 2", "Option 3"].map((opt) => (
+      <FormControlLabel
         <FormControlLabel
         key={opt}
         control={
           <Checkbox
             color="default"   
             checked={selectedOptions.includes(opt)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedOptions([...selectedOptions, opt]);
+              } else {
+                setSelectedOptions(selectedOptions.filter((o) => o !== opt));
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               if (e.target.checked) {
                 setSelectedOptions([...selectedOptions, opt]);
@@ -268,6 +343,7 @@ const [integerValue, setIntegerValue] = useState("");
           borderColor: "#CFD1D4", 
         },
         "&.Mui-focused fieldset": {
+          borderColor: "#CFD1D4 !important",
           borderColor: "#CFD1D4 !important", 
         },
       },
@@ -289,6 +365,11 @@ const [integerValue, setIntegerValue] = useState("");
     label="Select Option"
     select
     fullWidth
+    value={dropdownValue}
+    onChange={(e) => setDropdownValue(e.target.value)}
+    InputLabelProps={{ shrink: true }}
+    sx={{
+   
 
     value={dropdownValue}
     onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDropdownValue(e.target.value)}
@@ -304,17 +385,21 @@ const [integerValue, setIntegerValue] = useState("");
       },
       
       "& .MuiOutlinedInput-root": {
+        
+        height: "50px", 
         height: "50px",
         paddingTop: "0", 
         paddingBottom: "0",
 
         "& fieldset": {
+          borderColor: "#CFD1D4",
           borderColor: "#CFD1D4", 
         },
         "&:hover fieldset": {
           borderColor: "#CFD1D4", 
         },
         "&.Mui-focused fieldset": {
+          borderColor: "#CFD1D4 !important", 
           borderColor: "#CFD1D4 !important",
         },
       },
@@ -334,6 +419,12 @@ const [integerValue, setIntegerValue] = useState("");
     <TextField
       label="Add Text Here"
       value={textValue}
+      onChange={(e) => setTextValue(e.target.value)}
+      fullWidth
+      InputLabelProps={{ shrink: true }}
+      sx={{
+        width: "380px",
+      
       onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setTextValue(e.target.value)}
       fullWidth
       InputLabelProps={{ shrink: true }}
@@ -348,6 +439,7 @@ const [integerValue, setIntegerValue] = useState("");
       },
               
         "& .MuiOutlinedInput-root": {
+          height: "50px", 
           height: "50px",
           borderRadius: "10px",
 
@@ -358,6 +450,9 @@ const [integerValue, setIntegerValue] = useState("");
           "&:hover fieldset": {
             borderColor: "#CFD1D4",
           },
+      
+          "&.Mui-focused fieldset": {
+            borderColor: "#CFD1D4 !important", 
           "&.Mui-focused fieldset": {
             borderColor: "#CFD1D4 !important",
           },
@@ -374,6 +469,39 @@ const [integerValue, setIntegerValue] = useState("");
 {/* Text → Text Area */}
 {dataType === "Percentage" && (
   <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+    <TextField 
+      label="Percentage" 
+      fullWidth
+      value={percentage}
+      onChange={(e) => setPercentage(e.target.value)}
+      InputLabelProps={{ shrink: true }}
+      sx={{
+         width: "380px", 
+      "& .MuiInputLabel-root.Mui-focused": {
+        color: "#232323 !important", 
+      },
+      
+      "& .MuiInputLabel-root": {
+        color: "#5F646F !important",
+      },
+      
+      "& .MuiOutlinedInput-root": {
+    
+        height: "50px", 
+        paddingTop: "0", 
+        paddingBottom: "0",
+
+        "& fieldset": {
+          borderColor: "#CFD1D4", 
+        },
+        "&:hover fieldset": {
+          borderColor: "#CFD1D4", 
+        },
+        "&.Mui-focused fieldset": {
+          borderColor: "#CFD1D4 !important", 
+        },
+      },
+    }}
     <TextField
       label="Percentage"
       value={percentage}
@@ -403,6 +531,23 @@ const [integerValue, setIntegerValue] = useState("");
   <Box sx={{ display: "flex", flexDirection: "row", gap: "10px" }}>
     <TextField
       label="Integer Value"
+      fullWidth
+      error={integerError}
+      helperText={integerError ? "This field is required" : ""}
+      value={integerValue}
+      onChange={(e) => {
+        setIntegerValue(e.target.value);
+        setIntegerError(e.target.value.trim() === "");
+      }}
+      InputLabelProps={{ shrink: true }}
+      sx={{
+        width: "380px",
+        "& .MuiInputLabel-root.Mui-focused": {
+          color: "#232323 !important",
+        },
+        "& .MuiInputLabel-root": {
+          color: "#5F646F !important",
+        },
       value={integerValue}
       onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setIntegerValue(e.target.value)}
       fullWidth
@@ -415,6 +560,15 @@ const [integerValue, setIntegerValue] = useState("");
           height: "50px",
           paddingTop: "0",
           paddingBottom: "0",
+          "& fieldset": {
+            borderColor: "#CFD1D4",
+          },
+          "&:hover fieldset": {
+            borderColor: "#CFD1D4",
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "#CFD1D4 !important",
+          },
           "& fieldset": { borderColor: "#CFD1D4" },
           "&:hover fieldset": { borderColor: "#CFD1D4" },
           "&.Mui-focused fieldset": { borderColor: "#CFD1D4 !important" },
@@ -423,6 +577,11 @@ const [integerValue, setIntegerValue] = useState("");
     />
   </Box>
 )}
+
+
+
+    {/* Buttons */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mr: 2 }}>
 
 
     {/* Buttons */}
@@ -455,6 +614,7 @@ const [integerValue, setIntegerValue] = useState("");
               "&:hover": { background: "#2f2f2f" },
             }}
           >
+            Add
             {editData ? "Update" : "Add"}
           </Button>
         </Box>
