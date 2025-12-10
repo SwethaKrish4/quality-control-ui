@@ -23,7 +23,7 @@ import ViewIcon from "@/assets/icons/eye.jpg";
 import { useNavigate } from "react-router-dom";
 import AddEquipmentPopup from "./AddEquipmentPopup";
 
-import { Equipment } from "@/types";
+import { Department, Equipment, Parameter } from "@/types";
 
 const EquipmentPage = () => {
   const navigate = useNavigate();
@@ -34,12 +34,76 @@ const EquipmentPage = () => {
   const open = Boolean(anchorEl);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [openAddEquipmentPopup, setOpenAddEquipmentPopup] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { mockEquipments } = await import("@/utils/mockData");
-        setEquipmentData(mockEquipments);
+        const response = await fetch(`http://127.0.0.1:8000/api/get_clinic/1/`);
+        const data = await response.json();
+
+        let departmentList: Department[] = [];
+        let equipmentList: Equipment[] = [];
+        let parametersList: Parameter[] = [];
+        // ---------- Departments ----------
+          departmentList = data.department.map((d: any, depIndex: number) => ({
+            id: depIndex + 1,
+            name: d.name,
+            is_active: d.is_active,
+            clinic_id: 1,
+            created_at: new Date().toISOString(),
+          }));
+        
+          // ---------- Equipments + Parameters ----------
+          let equipmentCounter = 1;
+          let parameterCounter = 1;
+        
+          data.department.forEach((dep: any, depIndex: number) => {
+            dep.equipments.forEach((eq: any) => {
+              const newEquipment: Equipment = {
+                id: equipmentCounter,
+                equipment_name: eq.equipment_name,
+                dep_id: depIndex + 1,
+                created_at: new Date().toISOString(),
+                department: departmentList[depIndex],
+                parameters: [], // add parameter array
+              };
+        
+              equipmentList.push(newEquipment);
+        
+              // parameters
+              eq.parameters.forEach((param: any) => {
+                const newParam: Parameter = {
+                  id: parameterCounter,
+                  parameter_name: param.parameter_name,
+                  equipment_id: equipmentCounter,
+                  is_active: param.is_active,
+                  Content: {
+                    ...param.content,
+                    unit: "N/A",
+                    min_value: 0,
+                    max_value: 0,
+                    control_limits: {
+                      warning_min: 0,
+                      warning_max: 0,
+                      critical_min: 0,
+                      critical_max: 0,
+                    },
+                  },
+                  created_at: new Date().toISOString(),
+                  equipment: newEquipment,
+                };
+        
+                parametersList.push(newParam);
+                newEquipment.parameters.push(newParam); // store inside equipment
+        
+                parameterCounter++;
+              });
+        
+              equipmentCounter++;
+            });
+          });
+          setEquipmentData(equipmentList);
       } catch (error) {
         console.error("Error loading equipments:", error);
       }
@@ -47,6 +111,11 @@ const EquipmentPage = () => {
 
     fetchData();
   }, []);
+
+  const filteredEquipments = equipmentData.filter((item) =>
+    item.equipment_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
 
   const getCreatedDate = (dateString: string) => {
     let date = new Date(dateString);
@@ -100,8 +169,12 @@ const EquipmentPage = () => {
         <Box sx={{ display: "flex", gap: 2 }}>
           <TextField
             size="small"
+            variant="outlined"
+            InputLabelProps={{ shrink: true }}
             placeholder="Search Equipment's"
-            sx={{ width: 260, background: "#fff" }}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ width: 260, background: "#fff", "& .MuiOutlinedInput-root": {"& fieldset": { borderColor: "#CFD1D4" }, "&:hover fieldset": { borderColor: "#CFD1D4" }, "&.Mui-focused fieldset": { borderColor: "#CFD1D4" }}}}
           />
 
           <Button
@@ -120,7 +193,7 @@ const EquipmentPage = () => {
 
       {/* Cards */}
       <Grid container spacing={2}>
-        {equipmentData.map((item) => {
+        {filteredEquipments.map((item) => {
           const isInactive = item.status === "inactive";
           
           return (
